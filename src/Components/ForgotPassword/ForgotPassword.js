@@ -1,16 +1,19 @@
 import React, {useState} from 'react';
+import axios from 'axios';
+
 import {LockOutlined} from "@material-ui/icons";
 import {Button, Card, TextField, Typography} from '@material-ui/core';
 
-import './ForgotPassword.css'
+import cssClasses from './ForgotPassword.module.css'
 import useStyles from './useStyles'
 import AlertBox from "../../Layout/AlertBox/AlertBox";
 
 
 function ForgotPassword() {
     const classes = useStyles();
-    const [email, setEmail] = useState('')
-    const [errorMessage, setErrorMessage] = useState('')
+    const [email, setEmail] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const onSubmitHandler = (e) => {
         e.preventDefault();
@@ -21,12 +24,23 @@ function ForgotPassword() {
         if (!regex.test(email)) {
             return setErrorMessage('Incorrect Email Address')
         }
-        setErrorMessage('')
-        setEmail('');
+        axios.post('http://localhost:4004/reset-password', {
+            email
+        }).then(res => {
+            console.log(res);
+            setSuccessMessage('We have sent you a link to reset your password.')
+            setErrorMessage('');
+            setEmail('');
+        }).catch(err => {
+            console.log(err);
+            if(err.response.data.error.msg) {
+                setErrorMessage(err.response.data.error.msg);
+            }
+        });
     }
 
     return (
-        <div className={"box"}>
+        <div className={cssClasses.box}>
             <Card className={classes.root}>
                 <form onSubmit={onSubmitHandler} className={classes.form} noValidate>
                     <LockOutlined style={{fontSize: 150}}/>
@@ -63,6 +77,7 @@ function ForgotPassword() {
 
 
             <div className={classes.error}>
+                {successMessage && <AlertBox type={"success"} message={successMessage}/> }
                 {errorMessage ? <AlertBox type={"error"} message={errorMessage}/> : ''}
             </div>
 
