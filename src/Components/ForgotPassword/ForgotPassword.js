@@ -10,15 +10,10 @@ import AlertBox from "../../Layout/AlertBox/AlertBox";
 
 function ForgotPassword() {
     const classes = useStyles();
-<<<<<<< HEAD
-    const [email, setEmail] = useState('')
-    const [errorMessage, setErrorMessage] = useState('')
-=======
     const [email, setEmail] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
->>>>>>> 6c332048e2e33ddd2c031d35ea01ed9cff006b6b
     const onSubmitHandler = (e) => {
         e.preventDefault();
         if (!email) {
