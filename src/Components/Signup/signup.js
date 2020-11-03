@@ -7,8 +7,13 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import {Alert} from "@material-ui/lab";
+import axios from 'axios'
+import {Link as RLink} from 'react-router-dom';
+import {connect} from 'react-redux';
 
+import config from '../../db/config'
 import useStyles from './useStyles'
+import * as reducerType from '../../Store/reducerType'
 
 function Signup(props){
     const [fname,setFname] = useState('')
@@ -64,7 +69,30 @@ function Signup(props){
     }
     const onSubmitHandler=(e)=>{
         e.preventDefault();
-        //database
+        const signupData= JSON.stringify({
+          name:fname,
+          email:email,
+          password:password,
+        });
+        axios.post(config.baseurl+"user/signup",signupData,config)
+        .then((res)=>{
+          props.onAuth()
+          localStorage.setItem('currentUser',res.data.user)
+          //localStorage.setItem('token', res.data.jwt)
+          if(errorMessage.find((e)=>e.id==="server")){
+            setErrorMessage(errorMessage.filter((e)=>(e.id !== "server")))
+          }
+          props.history.replace('/chathome')
+        })
+        .catch((err)=>{
+          if(!errorMessage.find((e)=>e.id==="server")){
+            setErrorMessage([...errorMessage,{
+                id:"server",
+                value:(err.response.data.error.msg)?err.response.data.error.msg : "Some error occurred."
+            }])
+          }
+          console.log(err)
+        })
     }
     let errorBox=errorMessage.map(error=>{
         return (
@@ -77,7 +105,7 @@ function Signup(props){
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <div className={classes.paper}>
-            <Typography component="h1" variant="h4">
+            <Typography component="h1" variant="h3" color={"primary"}>
               Sign up
             </Typography>
             <form className={classes.form} noValidate>
@@ -144,7 +172,7 @@ function Signup(props){
               >Sign Up </Button>
               <Grid container justify="flex-end">
                 <Grid item>
-                  <Link href="/" variant="body2">
+                  <Link to="/" component={RLink} variant="body2">
                     Already have an account? Sign in
                   </Link>
                 </Grid>
@@ -154,5 +182,15 @@ function Signup(props){
         </Container>
       );
 }
+const mapStateToProps=(state)=>{
+  return{
+      authState: state.authState,
+  }
+}
+const mapDispatchToProps=(dispatch)=>{
+  return{
+      onAuth : ()=>dispatch({type: reducerType.AUTH_LOGOUT}),
+  }
+}
 
-export default Signup;
+export default connect(mapStateToProps,mapDispatchToProps)(Signup);

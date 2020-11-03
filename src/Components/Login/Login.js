@@ -1,11 +1,16 @@
 import React, {useState} from 'react';
-import {Link} from 'react-router-dom'
+import Link from '@material-ui/core/Link';
+import {Link as RLink} from 'react-router-dom'
 import {Button, Container, CssBaseline, Grid, TextField, Typography} from '@material-ui/core';
+import axios from 'axios';
+import {connect} from 'react-redux';
 
-import useStyles from "./useStyles"
+import useStyles from "./useStyles";
 import AlertBox from "../../Layout/AlertBox/AlertBox";
+import config from '../../db/config'
+import * as reducerType from '../../Store/reducerType'
 
-function Login() {
+function Login(props) {
     const classes = useStyles();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
@@ -21,14 +26,27 @@ function Login() {
             return setErrorMessage('Incorrect Email Address')
         }
         setErrorMessage('')
-        setEmail('');
-        setPassword('')
-        //props.history.replace('/landing')
+        const loginData=JSON.stringify({
+            email:email,
+            password:password
+        })
+        axios.post(config.baseurl+"user/signin",loginData,config)
+        .then((res)=>{
+            setErrorMessage('')
+            localStorage.setItem('currentUser',res.data.user)
+            localStorage.setItem('token', res.data.jwt)
+            props.onAuth()
+            props.history.replace('/chathome')
+        })
+        .catch((err)=>{
+            if(err.response.data.error.msg) {
+                setErrorMessage((err.response.data.error.msg)?err.response.data.error.msg : "Some error occurred.");
+            }
+        })
     }
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline/>
-
             <div className={classes.paper}>
                 <Typography component="h1" variant="h3" color={"primary"}>
                     Login
@@ -53,6 +71,7 @@ function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                     {errorMessage ? <AlertBox type={"error"} message={errorMessage}/> : ''}
                     <Button
                         type="submit"
                         fullWidth
@@ -61,7 +80,6 @@ function Login() {
                         className={classes.submit}
                     >Login
                     </Button>
-
                     <Grid container>
                         <Grid item xs>
                             <Link to="/forgotPassword">
@@ -69,7 +87,7 @@ function Login() {
                             </Link>
                         </Grid>
                         <Grid item>
-                            <Link to="/signup">
+                            <Link to="/signup" component={RLink} variant="body2">
                                 {"Don't have an account? Sign Up"}
                             </Link>
                         </Grid>
@@ -77,10 +95,19 @@ function Login() {
                 </form>
             </div>
             <br/><br/>
-            {errorMessage ? <AlertBox type={"error"} message={errorMessage}/> : ''}
         </Container>
-
     );
 }
+const mapStateToProps=(state)=>{
+    return{
+        authState: state.authState,
+    }
+}
 
-export default Login;
+const mapDispatchToProps=(dispatch)=>{
+    return{
+        onAuth : ()=>dispatch({type: reducerType.INIT_AUTHSTATE}),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Login);

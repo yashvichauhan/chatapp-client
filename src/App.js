@@ -5,6 +5,7 @@ import Login from "./Components/Login/Login";
 import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 import SignUp from "./Components/Signup/signup";
 import Header from "./Layout/Header/header"
+import ChatHome from './Components/ChatHome/chathome'
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                 <Route exact path='/' component={Login}/>
                 <Route path={'/signup'} component={SignUp}/>
                 <Route path={'/forgotPassword'} component={ForgotPassword}/>
+                <Route path={'/chathome'} component={ChatHome}/>
           </Switch>
           </BrowserRouter>
         </div>

@@ -6,12 +6,10 @@ import './ForgotPassword.css'
 import useStyles from './useStyles'
 import AlertBox from "../../Layout/AlertBox/AlertBox";
 
-
 function ForgotPassword() {
     const classes = useStyles();
     const [email, setEmail] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
-
     const onSubmitHandler = (e) => {
         e.preventDefault();
         if (!email) {
@@ -24,7 +22,6 @@ function ForgotPassword() {
         setErrorMessage('')
         setEmail('');
     }
-
     return (
         <div className={"box"}>
             <Card className={classes.root}>
@@ -37,8 +34,6 @@ function ForgotPassword() {
                         Don't worry ! Just fill in your email and
                         we'll send you a link to Reset your Password
                     </Typography>
-
-
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -49,7 +44,6 @@ function ForgotPassword() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
-
                     <Button
                         type="submit"
                         fullWidth
@@ -60,13 +54,9 @@ function ForgotPassword() {
                     </Button>
                 </form>
             </Card>
-
-
             <div className={classes.error}>
                 {errorMessage ? <AlertBox type={"error"} message={errorMessage}/> : ''}
             </div>
-
-
         </div>
     );
 }
