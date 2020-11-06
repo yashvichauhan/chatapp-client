@@ -23,21 +23,24 @@ function Signup(props){
     const [errorMessage, setErrorMessage] = useState([])
 
     const classes = useStyles();
-    const requireValidation=(val,field)=>{
-        if(val.trim()===''){
+    const requireValidation=()=>{
+        if(!email || !fname || !lname || !password){
             if(!errorMessage.find((e)=>e.id==="require")){
-                return setErrorMessage([...errorMessage,{
-                    id:"require"+field,
-                    value:"Please fill the "+field+" input"
+              console.log("Adding the required error message..")
+                setErrorMessage([...errorMessage,{
+                    id:"require",
+                    value:"Please all fill the required fields"
                 }])
+                return false
             }
-        }else{
-            return setErrorMessage(errorMessage.filter((e)=>(e.id !== "require"+field)))
         }
+        if(errorMessage.find((e)=>e.id==="require")){
+          setErrorMessage(errorMessage.filter((e)=>(e.id !== "require")))
+        }
+        return true
     }
     const validateInp=(e)=>{
         const val=e.target.value
-        console.log(e.target)
         let regex = /^[A-Za-z0-9.]+@[A-Za-z0-9.]+\.[A-Za-z0-9]+$/;
         if(e.target.id==="email"){
             if (!regex.test(val)) {
@@ -47,28 +50,29 @@ function Signup(props){
                         value:"Enter a valid email address"
                     }])
                 }
+                setEmail('')
             }else{
                 setEmail(val)
                 return setErrorMessage(errorMessage.filter((e)=>(e.id !== "email")))
             }
-            requireValidation(val,e.target.id)
             console.log(e.target.id)
         }
         if(e.target.id==="lastName"){
-            requireValidation(val,e.target.name)
             setLname(val)
         }
         if(e.target.id==="password"){
-            requireValidation(val,e.target.name)
             setPassword(val)
         }
         if(e.target.id==="firstName"){
-            requireValidation(val,e.target.name)
             setFname(val)
         }
     }
     const onSubmitHandler=(e)=>{
         e.preventDefault();
+        console.log(errorMessage)
+        if(!requireValidation()){
+          return
+        }
         const signupData= JSON.stringify({
           name:fname,
           email:email,
@@ -77,7 +81,7 @@ function Signup(props){
         axios.post(config.baseurl+"user/signup",signupData,config)
         .then((res)=>{
           props.onAuth()
-          localStorage.setItem('currentUser',res.data.user)
+          localStorage.setItem('currentUser',JSON.stringify(res.data.user))
           //localStorage.setItem('token', res.data.jwt)
           if(errorMessage.find((e)=>e.id==="server")){
             setErrorMessage(errorMessage.filter((e)=>(e.id !== "server")))

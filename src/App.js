@@ -1,18 +1,16 @@
 import React from "react";
 import {Route, Switch,BrowserRouter} from 'react-router-dom';
 
-import Login from "./Components/Login/Login";
+import Login from "./Components/Login/login";
 import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 import SignUp from "./Components/Signup/signup";
-import Header from "./Layout/Header/header"
-import ChatHome from './Components/ChatHome/chathome'
+import ChatHome from './Components/Chat/chathome'
 import ResetPassword from "./Components/ForgotPassword/ResetPassword/ResetPassword";
 
 function App() {
     return (
         <div className="App">
           <BrowserRouter>
-          <Header/>
           <Switch>
                 <Route exact path='/' component={Login}/>
                 <Route path={'/signup'} component={SignUp}/>

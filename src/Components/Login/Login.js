@@ -33,7 +33,7 @@ function Login(props) {
         axios.post(config.baseurl+"user/signin",loginData,config)
         .then((res)=>{
             setErrorMessage('')
-            localStorage.setItem('currentUser',res.data.user)
+            localStorage.setItem('currentUser',JSON.stringify(res.data.user))
             localStorage.setItem('token', res.data.jwt)
             props.onAuth()
             props.history.replace('/chathome')

@@ -1,0 +1,43 @@
+.chatbox__main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    max-height: 100vh;
+}
+
+/*send message*/
+.sendchat {
+    display: flex;
+    flex-shrink: 0;
+    margin-top: 16px;
+    padding: 24px;
+}
+
+.sendchat form {
+    display: flex;
+    flex-grow: 1;
+    margin-right: 16px;
+}
+
+.sendchat input {
+    border: 1px solid #968c83;
+    width: 100%;
+    padding: 12px;
+    margin: 0 16px 0 0;
+    flex-grow: 1;
+}
+
+.sendchat button {
+    display: flex;
+    font-size: 14px;
+    flex-grow: 1;
+    background-color: #4c4c4c;
+    align-items: center;
+    border-radius:  10px;
+    letter-spacing: normal;
+    color: cornsilk;
+}
+
+
+
+

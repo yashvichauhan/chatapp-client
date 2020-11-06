@@ -1,0 +1,8 @@
+.side__bar{
+    margin:0;
+    height: 100vh;
+    color: white;
+    background: #4c4c4c;
+    width: 300px;
+    overflow-y: scroll;
+}
