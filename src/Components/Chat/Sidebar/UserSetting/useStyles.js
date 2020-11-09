@@ -3,8 +3,8 @@ import { deepPurple } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
     large:{
-        width: "50px",
-        height: "50px",
+        width: "35px",
+        height: "35px",
         alignItems:"center"
     },
     purple: {

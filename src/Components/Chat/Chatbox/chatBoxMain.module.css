@@ -31,11 +31,14 @@
     display: flex;
     font-size: 14px;
     flex-grow: 1;
-    background-color: #4c4c4c;
+    background-color: #1a2236;
     align-items: center;
     border-radius:  10px;
     letter-spacing: normal;
     color: cornsilk;
+}
+.sendchat__icon{
+    font-size: 30px;
 }
 
 

@@ -9,6 +9,7 @@ function SideBar(){
     return (
         <div className={cssStyle.side__bar}>
             <UserSetting/>
+            <hr style={{color: "#333b4f"}}/>
         </div>
     )
 }

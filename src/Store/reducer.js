@@ -2,7 +2,7 @@ import * as reducerType from './reducerType';
 const initialState={
     currentuser:null,
     authState:false,
-    loading:false
+    loading:false,
 }
 
 const reducer=(state=initialState,action)=>{

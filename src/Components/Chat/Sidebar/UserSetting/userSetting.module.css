@@ -6,3 +6,8 @@
 .container__menuIcon{
     flex-direction: row-reverse;
 }
+.userSetting__Icon{
+    font-size: 24px;
+    color:lightgray;
+    margin:0px 7px;
+}

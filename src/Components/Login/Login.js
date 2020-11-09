@@ -2,12 +2,11 @@ import React, {useState} from 'react';
 import Link from '@material-ui/core/Link';
 import {Link as RLink} from 'react-router-dom'
 import {Button, Container, CssBaseline, Grid, TextField, Typography} from '@material-ui/core';
-import axios from 'axios';
 import {connect} from 'react-redux';
+import axiosConfig from '../../db/axiosConfig'
 
 import useStyles from "./useStyles";
 import AlertBox from "../../Layout/AlertBox/AlertBox";
-import config from '../../db/config'
 import * as reducerType from '../../Store/reducerType'
 
 function Login(props) {
@@ -30,7 +29,7 @@ function Login(props) {
             email:email,
             password:password
         })
-        axios.post(config.baseurl+"user/signin",loginData,config)
+        axiosConfig.post("user/signin",loginData)
         .then((res)=>{
             setErrorMessage('')
             localStorage.setItem('currentUser',JSON.stringify(res.data.user))

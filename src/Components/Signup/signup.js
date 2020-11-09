@@ -7,11 +7,10 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import {Alert} from "@material-ui/lab";
-import axios from 'axios'
 import {Link as RLink} from 'react-router-dom';
 import {connect} from 'react-redux';
 
-import config from '../../db/config'
+import axiosConfig from '../../db/axiosConfig'
 import useStyles from './useStyles'
 import * as reducerType from '../../Store/reducerType'
 
@@ -58,13 +57,13 @@ function Signup(props){
             console.log(e.target.id)
         }
         if(e.target.id==="lastName"){
-            setLname(val)
+            setLname(val.trim())
         }
         if(e.target.id==="password"){
-            setPassword(val)
+            setPassword(val.trim())
         }
         if(e.target.id==="firstName"){
-            setFname(val)
+            setFname(val.trim())
         }
     }
     const onSubmitHandler=(e)=>{
@@ -74,15 +73,15 @@ function Signup(props){
           return
         }
         const signupData= JSON.stringify({
-          name:fname,
+          name:fname+lname,
           email:email,
           password:password,
         });
-        axios.post(config.baseurl+"user/signup",signupData,config)
+        axiosConfig.post("user/signup",signupData)
         .then((res)=>{
           props.onAuth()
           localStorage.setItem('currentUser',JSON.stringify(res.data.user))
-          //localStorage.setItem('token', res.data.jwt)
+          localStorage.setItem('token', res.data.jwt)
           if(errorMessage.find((e)=>e.id==="server")){
             setErrorMessage(errorMessage.filter((e)=>(e.id !== "server")))
           }

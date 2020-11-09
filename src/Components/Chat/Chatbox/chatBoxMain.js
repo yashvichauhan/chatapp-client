@@ -18,7 +18,7 @@ function ChatBoxMain(){
                         name="SendMsg" 
                         placeholder="Type Your Message Here"
                     ></input>
-                    <button>Send <span><SendSharpIcon/></span></button>
+                    <button ><span><SendSharpIcon className={cssClasses.sendchat__icon}/></span></button>
                 </form>
             </div>
         </div>

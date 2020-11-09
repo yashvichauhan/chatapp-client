@@ -7,7 +7,8 @@ import * as reducerType from '../../Store/reducerType'
 class logout extends Component {
     logoutHandler=()=>{
         localStorage.removeItem('token');
-        this.props.onLogout()
+        localStorage.removeItem('currentUser');
+        this.props.onLogout();
     }
     render() {
         return (

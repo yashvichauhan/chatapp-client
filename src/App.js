@@ -6,6 +6,7 @@ import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 import SignUp from "./Components/Signup/signup";
 import ChatHome from './Components/Chat/chathome'
 import ResetPassword from "./Components/ForgotPassword/ResetPassword/ResetPassword";
+import EditProfile from "./Components/Chat/EditProfile/editProfile";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                 <Route exact path='/' component={Login}/>
                 <Route path={'/signup'} component={SignUp}/>
                 <Route path={'/chathome'} component={ChatHome}/>
+                <Route path={'/editprofile'} component={EditProfile}/>
                 <Route path={'/forgotPassword'} exact component={ForgotPassword}/>
                 <Route path={'/forgotPassword/:token'} component={ResetPassword} />
           </Switch>
