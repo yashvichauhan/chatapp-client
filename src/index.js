@@ -1,21 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux' ;
-import {createStore,compose} from 'redux';
+import {createStore,compose, combineReducers} from 'redux';
+import { BrowserRouter } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 
 import App from './App';
-import reducer from './Store/reducer'
+import userReducer from './Store/user';
 
 const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
-const store = createStore(reducer, composeEnhancers());
+const rootReducer = combineReducers({
+  user: userReducer
+});
+
+const store = createStore(rootReducer, composeEnhancers());
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
+    <BrowserRouter>
+        <Provider store={store}>
+            <App />
+        </Provider>
+    </BrowserRouter>,
   document.getElementById('root')
 );
 

@@ -1,112 +1,132 @@
-import React, {useState} from 'react';
-import Link from '@material-ui/core/Link';
-import {Link as RLink} from 'react-router-dom'
-import {Button, Container, CssBaseline, Grid, TextField, Typography} from '@material-ui/core';
-import {connect} from 'react-redux';
-import axiosConfig from '../../db/axiosConfig'
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-import useStyles from "./useStyles";
-import AlertBox from "../../Layout/AlertBox/AlertBox";
-import * as reducerType from '../../Store/reducerType'
+import "antd/dist/antd.css";
+import { Form, Input, Button, Row, Col, Typography, Spin, notification } from "antd";
+import { CloseCircleOutlined, UserOutlined, LockOutlined } from '@ant-design/icons';
+import { connect } from "react-redux"
+
+import axiosConfig from "../../db/axiosConfig";
+
+import * as reducerType from "../../Store/reducerType";
+
+const { Title } = Typography;
+
+const layout = {
+  labelCol: {
+    span: 0,
+  },
+  wrapperCol: {
+    span: 24,
+  },
+};
 
 function Login(props) {
-    const classes = useStyles();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('')
-    const [errorMessage, setErrorMessage] = useState('')
+  const [ loading, setLoading ] = useState(false);
 
-    const onSubmitHandler = (e) => {
-        e.preventDefault();
-        if (!email || !password) {
-            return setErrorMessage('All Fields are Required! ')
-        }
-        let regex = /^[A-Za-z0-9.]+@[A-Za-z0-9.]+\.[A-Za-z0-9]+$/;
-        if (!regex.test(email)) {
-            return setErrorMessage('Incorrect Email Address')
-        }
-        setErrorMessage('')
-        const loginData=JSON.stringify({
-            email:email,
-            password:password
-        })
-        axiosConfig.post("user/signin",loginData)
-        .then((res)=>{
-            setErrorMessage('')
-            localStorage.setItem('currentUser',JSON.stringify(res.data.user))
-            localStorage.setItem('token', res.data.jwt)
-            props.onAuth()
-            props.history.replace('/chathome')
-        })
-        .catch((err)=>{
-            if(err.response.data.error.msg) {
-                setErrorMessage((err.response.data.error.msg)?err.response.data.error.msg : "Some error occurred.");
-            }
-        })
-    }
-    return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline/>
-            <div className={classes.paper}>
-                <Typography component="h1" variant="h3" color={"primary"}>
-                    Login
-                </Typography>
-                <form onSubmit={onSubmitHandler} className={classes.form} noValidate>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        label="Email Address*"
-                        autoComplete="email"
-                        autoFocus
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        label="Password*"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                     {errorMessage ? <AlertBox type={"error"} message={errorMessage}/> : ''}
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >Login
-                    </Button>
-                    <Grid container>
-                        <Grid item xs>
-                            <Link to="/forgotPassword">
-                                Forgot password?
-                            </Link>
-                        </Grid>
-                        <Grid item>
-                            <Link to="/signup" component={RLink} variant="body2">
-                                {"Don't have an account? Sign Up"}
-                            </Link>
-                        </Grid>
-                    </Grid>
-                </form>
-            </div>
-            <br/><br/>
-        </Container>
-    );
-}
-const mapStateToProps=(state)=>{
-    return{
-        authState: state.authState,
-    }
-}
+  const onFinish = (values) => {
+    setLoading(true);
+    axiosConfig.post("user/signin", {
+      email: values.email,
+      password: values.password
+    }).then((res)=>{
+      setLoading(false);
+      localStorage.setItem('currentUser',JSON.stringify(res.data.user))
+      localStorage.setItem('token', res.data.jwt)
+      props.onAuth(res.data.jwt, res.data.user);
+      props.history.replace('/chathome')
+    }).catch((err)=>{
+      setLoading(false);
+      //Error notification
+      notification.open({
+        message: 'Login Failed',
+        description: err.response.data.error.msg,
+        icon: <CloseCircleOutlined style={{ color: 'red' }} />,
+      });
+      console.log(err);
+    });
+  };
 
-const mapDispatchToProps=(dispatch)=>{
-    return{
-        onAuth : ()=>dispatch({type: reducerType.INIT_AUTHSTATE}),
-    }
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  return (
+    <>
+      <Row
+        type="flex"
+        justify="center"
+        align="middle"
+        style={{
+          minHeight: "100vh"
+        }}
+      >
+        <Col span={7}>
+          <Title>Login</Title>
+          <Form
+            size={"large"}
+            {...layout}
+            name="basic"
+            initialValues={{
+              remember: true,
+            }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+          >
+            <Form.Item
+              name="email"
+              hasFeedback
+              rules={[
+                {
+                  type: "email",
+                  required: "true",
+                  message: "enter valid email address.",
+                },
+              ]}
+            >
+              <Input prefix={<UserOutlined className={"site-form-item-icon"} />} placeholder={"Email"} />
+            </Form.Item>
+            <Form.Item
+              name={"password"}
+              hasFeedback
+              rules={[
+                {
+                  required: true,
+                  message: "enter your password.",
+                },
+              ]}
+            >
+              <Input.Password prefix={<LockOutlined className={"site-form-item-icon"} />} placeholder={"Password"} />
+            </Form.Item>
+            <Form.Item>
+              <Link to={'/signup'}>Don't have an account? Signup!</Link><br/>
+              <Link to={'/forgotPassword'}>Forgot Passowrd?</Link>
+            </Form.Item>
+            <Form.Item>
+              <Row>
+                <Spin spinning={loading}>
+                  <Button type="primary" htmlType="submit">
+                      Submit
+                  </Button>
+                </Spin>
+              </Row>
+            </Form.Item>
+          </Form>
+        </Col>
+      </Row>
+    </>
+  );
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Login);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAuth: (token, user) =>
+      dispatch({
+        type: reducerType.INIT_AUTHSTATE,
+        token,
+        user
+      }),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Login);
