@@ -1,87 +1,115 @@
 import React, { useState } from 'react'
-import {Link as RLink, useParams} from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import "antd/dist/antd.css";
+import {Form, Input, Row, Col, Typography, Spin, Button, notification} from "antd";
+import {CloseCircleOutlined, LockOutlined} from '@ant-design/icons';
 
-import AlertBox from "../../../Layout/AlertBox/AlertBox";
-import useStyles from "./useStyles";
-import {Button, Container, CssBaseline, Grid, TextField, Typography, Link} from '@material-ui/core';
 import axios from 'axios';
 
+const layout = {
+    labelCol: {
+        span: 0,
+    },
+    wrapperCol: {
+        span: 24,
+    },
+};
+const { Title } = Typography;
+
 const ResetPassword = (props) => {
-  const classes = useStyles();
-
   const { token } = useParams();
+  const [ loading, setLoading ] = useState(false);
 
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const onSubmitHandler = (e) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      return setErrorMessage('Password did not match.');
-    }
+  const onFinish = (values) => {
+    setLoading(true);
     axios.post(`http://localhost:4004/reset-password/${token}`, {
-      password
+      password: values.password
     }).then(res => {
-      setErrorMessage('');
+      setLoading(false);
       props.history.replace('/');
     }).catch(err => {
+      setLoading(false);
       console.log(err);
+      let msg = 'something went wrong.';
       if (err.response.data.error.msg) {
-        setErrorMessage(err.response.data.error.msg);
+          msg = err.response.data.error.msg;
       }
+      //Error notification
+      notification.open({
+          message: 'Reset Password Failed',
+          description: msg,
+          icon: <CloseCircleOutlined style={{ color: 'red' }} />,
+      });
     })
   };
 
+  const onFinishFailed = (err) => {
+      console.log("failed:", err);
+  };
+
   return (
-    <Container component="main" maxWidth="xs">
-            <CssBaseline/>
-
-            <div className={classes.paper}>
-                <Typography component="h1" variant="h3" color={"primary"}>
-                    Reset Password
-                </Typography>
-                <form onSubmit={onSubmitHandler} className={classes.form} noValidate>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        label="Password*"
-                        type="password"
-                        autoFocus
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        label="Confirm Password*"
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >Submit
-                    </Button>
-
-                    <Grid container>
-                        <Grid item xs>
-                            <Link to="/" component={RLink}>
-                                Continue to signin
-                            </Link>
-                        </Grid>
-                    </Grid>
-                </form>
-            </div>
-            <br/><br/>
-            {errorMessage ? <AlertBox type={"error"} message={errorMessage}/> : ''}
-        </Container>
+      <Row type={"flex"}
+           justify={"center"}
+           align={"middle"}
+           style={{ minHeight: '100vh' }}
+      >
+          <Col span={7}>
+              <Form size={"large"}
+                    {...layout}
+                    name="basic"
+                    initialValues={{remember: true}}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+              >
+                  <Title>Reset Password</Title>
+                  <Form.Item
+                      name="password"
+                      rules={[
+                          {
+                              required: true,
+                              message: 'Please input your password!',
+                          },
+                      ]}
+                      hasFeedback
+                  >
+                      <Input.Password prefix={<LockOutlined className={"site-form-item-icon"} />} placeholder={"Password"} />
+                  </Form.Item>
+                  <Form.Item
+                      name="confirm"
+                      dependencies={['password']}
+                      hasFeedback
+                      rules={[
+                          {
+                              required: true,
+                              message: 'Please confirm your password!',
+                          },
+                          ({ getFieldValue }) => ({
+                              validator(rule, value) {
+                                  if (!value || getFieldValue('password') === value) {
+                                      return Promise.resolve();
+                                  }
+                                  return Promise.reject('The two passwords that you entered do not match!');
+                              },
+                          }),
+                      ]}
+                  >
+                      <Input.Password prefix={<LockOutlined className={"site-form-item-icon"} />} placeholder={"Confirm Password"} />
+                  </Form.Item>
+                  <Form.Item>
+                      <Row>
+                          <Spin spinning={loading}>
+                              <Button type="primary" htmlType="submit">
+                                  Submit
+                              </Button>
+                          </Spin>
+                      </Row>
+                  </Form.Item>
+                  <Form.Item>
+                      <Link to={'/'}>Already have an account? Login!</Link>
+                  </Form.Item>
+              </Form>
+          </Col>
+      </Row>
   );
 };
 

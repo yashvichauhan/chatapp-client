@@ -1,198 +1,135 @@
 import React,{useState} from 'react';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import {Alert} from "@material-ui/lab";
-import {Link as RLink} from 'react-router-dom';
 import {connect} from 'react-redux';
 
+import {Link } from 'react-router-dom';
+import "antd/dist/antd.css";
+import {Form, Input, Row, Col, Typography, Spin, Button, notification} from "antd";
+import { CloseCircleOutlined, UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+
 import axiosConfig from '../../db/axiosConfig'
-import useStyles from './useStyles'
 import * as reducerType from '../../Store/reducerType'
 
-function Signup(props){
-    const [fname,setFname] = useState('')
-    const [lname,setLname] = useState('')
-    const [password,setPassword]=useState('')
-    const [email,setEmail]= useState('')
-    const [errorMessage, setErrorMessage] = useState([])
+const layout = {
+    labelCol: {
+        span: 0,
+    },
+    wrapperCol: {
+        span: 24,
+    },
+};
 
-    const classes = useStyles();
-    const requireValidation=()=>{
-        if(!email || !fname || !lname || !password){
-            if(!errorMessage.find((e)=>e.id==="require")){
-              console.log("Adding the required error message..")
-                setErrorMessage([...errorMessage,{
-                    id:"require",
-                    value:"Please all fill the required fields"
-                }])
-                return false
-            }
-        }
-        if(errorMessage.find((e)=>e.id==="require")){
-          setErrorMessage(errorMessage.filter((e)=>(e.id !== "require")))
-        }
-        return true
-    }
-    const validateInp=(e)=>{
-        const val=e.target.value
-        let regex = /^[A-Za-z0-9.]+@[A-Za-z0-9.]+\.[A-Za-z0-9]+$/;
-        if(e.target.id==="email"){
-            if (!regex.test(val)) {
-                if(!errorMessage.find((e)=>e.id==="email")){
-                    return setErrorMessage([...errorMessage,{
-                        id:"email",
-                        value:"Enter a valid email address"
-                    }])
-                }
-                setEmail('')
-            }else{
-                setEmail(val)
-                return setErrorMessage(errorMessage.filter((e)=>(e.id !== "email")))
-            }
-            console.log(e.target.id)
-        }
-        if(e.target.id==="lastName"){
-            setLname(val.trim())
-        }
-        if(e.target.id==="password"){
-            setPassword(val.trim())
-        }
-        if(e.target.id==="firstName"){
-            setFname(val.trim())
-        }
-    }
-    const onSubmitHandler=(e)=>{
-        e.preventDefault();
-        console.log(errorMessage)
-        if(!requireValidation()){
-          return
-        }
+const { Title } = Typography;
+
+function Signup(props) {
+    const [ loading, setLoading ] = useState(false);
+
+    const onFinish = (values) => {
+        setLoading(true);
+        console.log("Success:", values);
         const signupData= JSON.stringify({
-          name:fname+lname,
-          email:email,
-          password:password,
+            name: values.name,
+            email: values.email,
+            password: values.password,
         });
-        axiosConfig.post("user/signup",signupData)
-        .then((res)=>{
-          props.onAuth()
-          localStorage.setItem('currentUser',JSON.stringify(res.data.user))
-          localStorage.setItem('token', res.data.jwt)
-          if(errorMessage.find((e)=>e.id==="server")){
-            setErrorMessage(errorMessage.filter((e)=>(e.id !== "server")))
-          }
-          props.history.replace('/chathome')
-        })
-        .catch((err)=>{
-          if(!errorMessage.find((e)=>e.id==="server")){
-            setErrorMessage([...errorMessage,{
-                id:"server",
-                value:(err.response.data.error.msg)?err.response.data.error.msg : "Some error occurred."
-            }])
-          }
-          console.log(err)
-        })
+        axiosConfig.post("user/signup",signupData).then((res)=>{
+            setLoading(false);
+            props.onAuth(res.data.jwt, res.data.user);
+            localStorage.setItem('currentUser',JSON.stringify(res.data.user));
+            localStorage.setItem('token', res.data.jwt);
+            props.history.replace('/chathome');
+        }).catch((err)=>{
+            setLoading(false);
+            console.log(err);
+            let msg = 'something went wrong.';
+            if (err.response.data.error.msg) {
+                msg = err.response.data.error.msg;
+            }
+            //Error notification
+            notification.open({
+                message: 'Signup Failed',
+                description: msg,
+                icon: <CloseCircleOutlined style={{ color: 'red' }} />,
+            });
+        });
     }
-    let errorBox=errorMessage.map(error=>{
-        return (
-            <Alert severity="error" variant={"outlined"}>
-                <strong> {error.value} </strong>
-            </Alert>
-        )
-    })
+
+    const onFinishFailed = (errorInfo) => {
+        console.log("Failed:", errorInfo);
+    };
+
     return (
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <div className={classes.paper}>
-            <Typography component="h1" variant="h3" color={"primary"}>
-              Sign up
-            </Typography>
-            <form className={classes.form} noValidate>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    autoComplete="fname"
-                    name="First Name"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="firstName"
-                    label="First Name"
-                    onChange={(e) => validateInp(e)}
-                    autoFocus
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="lastName"
-                    label="Last Name"
-                    name="Last Name"
-                    autoComplete="lname"
-                    onChange={(e) => validateInp(e)}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="Email Address"
-                    autoComplete="email"
-                    onChange={(e) => validateInp(e)}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    name="Password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                    onChange={(e) => validateInp(e)}
-                  />
-                </Grid>
-                { errorMessage? <div className={classes.alertBox}>{errorBox}</div>: ''} 
-              </Grid>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={onSubmitHandler}
-              >Sign Up </Button>
-              <Grid container justify="flex-end">
-                <Grid item>
-                  <Link to="/" component={RLink} variant="body2">
-                    Already have an account? Sign in
-                  </Link>
-                </Grid>
-              </Grid>
-            </form>
-          </div>
-        </Container>
-      );
+        <Row
+            type={"flex"}
+            justify={"center"}
+            align={"middle"}
+            style={{ minHeight: '100vh' }}
+        >
+            <Col span={7}>
+                <Form size={"large"}
+                      {...layout}
+                      name="basic"
+                      initialValues={{remember: true}}
+                      onFinish={onFinish}
+                      onFinishFailed={onFinishFailed}
+                >
+                    <Title>Signup</Title>
+                    <Form.Item name={"name"}
+                               hasFeedback
+                               rules={[{ required: true, message: 'Name is required', whitespace: true }]}
+                    >
+                        <Input prefix={<UserOutlined className={"site-form-item-icon"} />} placeholder={"Name"} />
+                    </Form.Item>
+                    <Form.Item
+                        name="email"
+                        hasFeedback
+                        rules={[
+                            {
+                                type: "email",
+                                required: "true",
+                                message: "enter valid email address.",
+                            },
+                        ]}
+                    >
+                        <Input prefix={<MailOutlined className={"site-form-item-icon"} />} placeholder={"Email"} />
+                    </Form.Item>
+                    <Form.Item
+                        name={"password"}
+                        hasFeedback
+                        rules={[
+                            {
+                                required: true,
+                                message: "enter your password.",
+                            },
+                        ]}
+                    >
+                        <Input.Password prefix={<LockOutlined className={"site-form-item-icon"} />} placeholder={"Password"} />
+                    </Form.Item>
+                    <Form.Item>
+                        <Row>
+                            <Spin spinning={loading}>
+                                <Button type="primary" htmlType="submit">
+                                    Submit
+                                </Button>
+                            </Spin>
+                        </Row>
+                    </Form.Item>
+                    <Form.Item>
+                        <Link to={'/'}>Already have an account? Login!</Link>
+                    </Form.Item>
+                </Form>
+            </Col>
+        </Row>
+    );
+
 }
 const mapStateToProps=(state)=>{
   return{
-      authState: state.authState,
+    authState: state.authState,
   }
 }
 const mapDispatchToProps=(dispatch)=>{
   return{
-      onAuth : ()=>dispatch({type: reducerType.AUTH_LOGOUT}),
+      onAuth : (token, user)=>dispatch({type: reducerType.INIT_AUTHSTATE, token, user}),
   }
 }
 

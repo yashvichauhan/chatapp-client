@@ -1,79 +1,130 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import "antd/dist/antd.css";
+import {Form, Input, Row, Col, Typography, Spin, Button, Result} from "antd";
+import {  MailOutlined } from '@ant-design/icons';
+import {Link} from "react-router-dom";
 
-import {LockOutlined} from "@material-ui/icons";
-import {Button, Card, TextField, Typography} from '@material-ui/core';
+const layout = {
+    labelCol: {
+        span: 0,
+    },
+    wrapperCol: {
+        span: 24,
+    },
+};
+const { Title } = Typography;
 
-import cssClasses from './ForgotPassword.module.css'
-import useStyles from './useStyles'
-import AlertBox from "../../Layout/AlertBox/AlertBox";
+const ForgotPassword = (props) => {
+    const [ loading, setLoading ] = useState(false);
+    const [ success, setSuccess ] = useState(false);
+    const [ error, setError ] = useState(null);
 
-function ForgotPassword() {
-    const classes = useStyles();
-    const [email, setEmail] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
-
-    const onSubmitHandler = (e) => {
-        e.preventDefault();
-        if (!email) {
-            return setErrorMessage('Oopsie, Email is Required! ')
-        }
-        let regex = /^[A-Za-z0-9.]+@[A-Za-z0-9.]+\.[A-Za-z0-9]+$/;
-        if (!regex.test(email)) {
-            return setErrorMessage('Incorrect Email Address')
-        }
+    //ON SUBMIT
+    const onFinish = (values) => {
+        setLoading(true);
         axios.post('http://localhost:4004/reset-password', {
-            email
+            email: values.email
         }).then(res => {
+            setLoading(false);
+            setSuccess(true);
             console.log(res);
-            setSuccessMessage('We have sent you a link to reset your password.')
-            setErrorMessage('');
-            setEmail('');
         }).catch(err => {
             console.log(err);
+            let msg = 'something went wrong.';
             if(err.response.data.error.msg) {
-                setErrorMessage(err.response.data.error.msg);
+                msg = err.response.data.error.msg;
             }
+            setLoading(false);
+            setError(msg);
         });
+    };
+
+    const onFinishFailed = (errorInfo) => {
+        console.log("Failed:", errorInfo);
+    };
+
+    //DEFAULT PAGE CONTENT
+    let pageContent = (
+        <Row type={"flex"}
+             justify={"center"}
+             align={"middle"}
+             style={{ minHeight: '100vh' }}
+        >
+            <Col span={7}>
+                <Form size={"large"}
+                      {...layout}
+                      name="basic"
+                      initialValues={{remember: true}}
+                      onFinish={onFinish}
+                      onFinishFailed={onFinishFailed}
+                >
+                    <Title>Forgot Password?</Title>
+                    <Form.Item
+                        name="email"
+                        hasFeedback
+                        rules={[
+                            {
+                                type: "email",
+                                required: "true",
+                                message: "enter valid email address.",
+                            },
+                        ]}
+                    >
+                        <Input prefix={<MailOutlined className={"site-form-item-icon"} />}
+                               placeholder={"Email"}
+                        />
+                    </Form.Item>
+                    <Form.Item>
+                        <Row>
+                            <Spin spinning={loading}>
+                                <Button type="primary" htmlType="submit">
+                                    Submit
+                                </Button>
+                            </Spin>
+                        </Row>
+                    </Form.Item>
+                    <Form.Item>
+                        <Link to={'/'}>Go to, Login.</Link>
+                    </Form.Item>
+                </Form>
+            </Col>
+        </Row>
+    );
+
+    //SET SUCCESS PAGE
+    if (success) {
+        pageContent = (
+            <Result
+                status="success"
+                title="Password Reset Link Has Been Sent!"
+                subTitle="Check your email for a link to reset your password."
+                extra={[
+                    <Button type="primary" key="Home" onClick={() => { setSuccess(false); props.history.replace('/') }}>
+                        Go To Login
+                    </Button>,
+                ]}
+            />
+        );
+    }
+
+    //SET ERROR PAGE
+    if (error) {
+        pageContent = (
+            <Result
+                status="error"
+                title="Oops! Something went wrong."
+                subTitle={error}
+                extra={[
+                    <Button type="primary" key="Home" onClick={() => setError(null)}>
+                        Try Again
+                    </Button>,
+                ]}
+            />
+        );
     }
     return (
-        <div className={cssClasses.box}>
-            <Card className={classes.root}>
-                <form onSubmit={onSubmitHandler} className={classes.form} noValidate>
-                    <LockOutlined style={{fontSize: 150}}/>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        Forgot your Password ?
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        Don't worry ! Just fill in your email and
-                        we'll send you a link to Reset your Password
-                    </Typography>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        label="Email Address*"
-                        autoComplete="email"
-                        autoFocus
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >Reset Password
-                    </Button>
-                </form>
-            </Card>
-            <div className={classes.error}>
-                {successMessage && <AlertBox type={"success"} message={successMessage}/> }
-                {errorMessage ? <AlertBox type={"error"} message={errorMessage}/> : ''}
-            </div>
-        </div>
+        pageContent
     );
 }
 
