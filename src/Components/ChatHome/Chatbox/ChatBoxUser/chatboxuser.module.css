@@ -1,0 +1,61 @@
+/*chat user box header*/
+.container{
+    width: 100%;
+    padding: 1rem;
+    align-items: center;
+    color:#1a2236;
+    display: flex;
+    box-sizing: border-box;
+    border-bottom:1px solid #D3D3D3!important;
+    justify-content: space-between;
+}
+.chatBoxUser__user{
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+.chatBoxUser__userAvatar{
+    margin-right: 0.5em;
+    align-items: center;
+    width: 6em;
+    height: 6em;
+}
+.chatBoxUser__actions{
+    font-size: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.chatBoxUser__listalign{
+    margin-right: 1em;
+    padding: 0;
+    list-style: none;
+    box-sizing: border-box;
+}
+.chatBoxUser__listIcons{
+    cursor: pointer;
+    background: none;
+    box-sizing: border-box;
+    border: 1px solid #D3D3D3!important;
+    font-size: 1.5em;
+    color:#1a2236;
+    padding: 0.2em 0.4em;
+}
+@media (min-width: 899px) {
+    .triggerIcon {
+      display: none;
+    }
+}
+/*drawer style*/
+.chatBoxUser__drawer{
+    background-color:#1a2236 !important ;
+}
+/**/
+.container__menuIcon{
+    flex-direction: row-reverse;
+}
+.userSetting__Icon{
+    font-size: 24px;
+    color:lightgray;
+    margin:0px 7px;
+}

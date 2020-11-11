@@ -2,13 +2,24 @@
     background-color: #0a80ff;;
     color:#fff;
     border-radius: 10px;
-    padding: 10px 20px;
+    padding: 0.5em 1em ;
     box-sizing: border-box;
     max-width: 22rem;
     overflow:auto;
     display: inline-flex;
 }
+.message_contentbox{
+    display: flex;
+    flex-direction: row;
+}
 .message__box{
     margin-bottom: 2rem;
+}
+.message_time{
+    color: #828282;
+    margin-top: 2px;
+    font-style: italic;
+    font-size: 12px;
+    align-self: flex-end;
 }
    

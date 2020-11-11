@@ -1,0 +1,7 @@
+.sider__main{
+    margin: 0;
+    color: #e6e6e6;
+    background-color: #1a2236;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}

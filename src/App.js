@@ -9,7 +9,7 @@ import NotFound from './NotFound';
 import Login from "./Components/Login/Login";
 import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 import SignUp from "./Components/Signup/signup";
-import ChatHome from './Components/Chat/chathome'
+import ChatHome from './Components/ChatHome/ChatHomePage'
 import ResetPassword from "./Components/ForgotPassword/ResetPassword/ResetPassword";
 import EditProfile from "./Components/Chat/EditProfile/editProfile";
 import * as reducerType from "./Store/reducerType";
