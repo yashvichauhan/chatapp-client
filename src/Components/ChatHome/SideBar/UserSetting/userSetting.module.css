@@ -3,7 +3,7 @@
     padding: 2px;
     align-items: center;
     box-sizing: border-box;
-    border-bottom: 1px solid #3d4761;
+    /* border-bottom: 1px solid #3d4761; */
 }
 .container__menuIcon{
     flex-direction: row-reverse;

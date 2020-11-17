@@ -4,8 +4,13 @@
     flex-direction: column;
     height: 100vh;
 }
-
-
+.imageBox{
+    display: block;
+    width: 55vh;
+    margin: 25vh auto;
+    padding: 0;
+    align-content: center;
+}
 
 
 

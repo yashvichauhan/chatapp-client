@@ -1,25 +1,25 @@
 .message__content{
     background-color: #0a80ff;;
     color:#fff;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 0.5em 1em ;
     box-sizing: border-box;
     max-width: 22rem;
     overflow:auto;
     display: inline-flex;
+    flex-direction: column;
 }
 .message_contentbox{
     display: flex;
-    flex-direction: row;
 }
 .message__box{
     margin-bottom: 2rem;
 }
 .message_time{
-    color: #828282;
-    margin-top: 2px;
+    color: #e8e8e8;
+    margin-top: 1.5px;
     font-style: italic;
-    font-size: 12px;
+    font-size: 10px;
     align-self: flex-end;
 }
    

@@ -7,10 +7,12 @@ import reportWebVitals from './reportWebVitals';
 
 import App from './App';
 import userReducer from './Store/user';
+import chatReducer from './Store/chat'
 
 const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 const rootReducer = combineReducers({
-  user: userReducer
+  user: userReducer,
+  chat: chatReducer
 });
 
 const store = createStore(rootReducer, composeEnhancers());

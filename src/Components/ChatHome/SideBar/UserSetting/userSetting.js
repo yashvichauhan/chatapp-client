@@ -9,6 +9,8 @@ import 'antd/dist/antd.css'
 
 import useStyles from "./useStyles"
 import cssClasses from "./userSetting.module.css"
+import logoutHandler from '../../../Logout/logout'
+import SearchUser from '../SearchUser/searchUser'
 
 function UserSetting(){
     const classes = useStyles();
@@ -17,13 +19,13 @@ function UserSetting(){
     const menu = (
         <Menu style={{maxWidth:'200px'}}>
           <Menu.Item key="0">
-            <a href="/editprofile">Edit Profile</a>
+            <a href="/#">Edit Profile</a>
           </Menu.Item>
           <Menu.Item key="1">
-            <a href="#">Settings</a>
+            <a href="/#">Settings</a>
           </Menu.Item>
           <Menu.Item key="3">
-          <a href="#">Logout</a>
+            <a href="/" onClick={logoutHandler} >Logout</a>
           </Menu.Item>
         </Menu>
       );
@@ -44,6 +46,7 @@ function UserSetting(){
                 </Dropdown>
             </Box>
             </Box>
+            <SearchUser/>
         </div>
     )
 }

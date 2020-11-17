@@ -15,9 +15,9 @@ function Message(props){
                     <div>
                         {props.content}
                     </div>
-                </div>
-                <div className={cssClasses.message_time}>
-                    {'1:30 PM'}
+                    <div className={cssClasses.message_time}>
+                        <span>{'1:30 PM'}</span>
+                    </div>
                 </div>
             </div>
         </div>

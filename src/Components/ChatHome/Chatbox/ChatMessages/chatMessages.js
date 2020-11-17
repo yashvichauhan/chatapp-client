@@ -18,7 +18,6 @@ function ChatMessages(props){
 
     const userData = JSON.parse(localStorage.getItem('currentUser')).name
     return(
-        <>
         <div class={cssClasses.chatbox__messages}>
            {
             chatMsgs.map((msgContent)=>(
@@ -29,7 +28,6 @@ function ChatMessages(props){
             ))
            }
         </div>
-        </>
     )
 }
 export default ChatMessages;

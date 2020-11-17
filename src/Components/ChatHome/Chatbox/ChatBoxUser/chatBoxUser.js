@@ -10,8 +10,9 @@ import useStyles from "./useStyles"
 import cssClasses from './chatboxuser.module.css'
 import sidebarClass from '../../SideBar/SideBar'
 import UserSetting from '../../SideBar/UserSetting/userSetting'
+import drawerCss from "./chatboxUserDrawer.module.css"
 
-function ChatBoxUser(){
+function ChatBoxUser(props){
     const classes = useStyles();
     const menu = (
         <Menu style={{maxWidth:'200px'}}>
@@ -33,15 +34,15 @@ function ChatBoxUser(){
             <div className={cssClasses.chatBoxUser__user}>
                 <Avatar className={cssClasses.chatBoxUser__userAvatar} alt="Kelly Brown"></Avatar>
                 <div>
-                    <Title level={4} style={{marginBottom:0}}>Kelly Brown</Title>
+                    <Title level={4} style={{marginBottom:0}}>{props.cGroup.userName}</Title>
                     <small style={{color:'#787878'}}><i>5 minutes ago</i></small>
                 </div>
                 <Drawer
                     placement="left"
-                    onClick={() => setVisible(false)}
                     onClose={() => setVisible(false)}
                     visible={visible}
-                    drawerStyle={{backgroundColor:'#1a2236'}}
+                    //className={drawerCss.myDrawer}
+                    drawerStyle={{backgroundColor:'#1a2236',padding:0}}
                 >
                 <div className={sidebarClass.sider__main}>
                     <UserSetting/>

@@ -1,0 +1,25 @@
+.container{
+    width: 100%;
+    padding: 1.5em;
+    display: flex;
+    box-sizing: border-box;
+    /* border-bottom:1px solid #3d4761!important; */
+    justify-content: space-between;
+}
+.chatgroup__user{
+    display: flex;
+    color:lightgray;
+    align-items: center;
+    box-sizing: border-box;
+}
+.chatgroup__userAvatar{
+    margin-right: 0.5em;
+    align-items: center;
+    width: 2em;
+    height: 2em;
+}
+.chatgroup__timestamp{
+    margin-top: 0;
+    color:#a7a7a7 ;
+    font-size: 0.8em;
+}

@@ -46,10 +46,6 @@
       display: none;
     }
 }
-/*drawer style*/
-.chatBoxUser__drawer{
-    background-color:#1a2236 !important ;
-}
 /**/
 .container__menuIcon{
     flex-direction: row-reverse;

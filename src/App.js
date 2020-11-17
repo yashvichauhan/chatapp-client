@@ -11,7 +11,7 @@ import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 import SignUp from "./Components/Signup/signup";
 import ChatHome from './Components/ChatHome/ChatHomePage'
 import ResetPassword from "./Components/ForgotPassword/ResetPassword/ResetPassword";
-import EditProfile from "./Components/Chat/EditProfile/editProfile";
+import EditProfile from "./Components/ChatHome/EditProfile/editProfile";
 import * as reducerType from "./Store/reducerType";
 
 function App(props) {
