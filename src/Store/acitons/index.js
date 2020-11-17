@@ -1,0 +1,3 @@
+export {
+  editProfile
+} from './user';

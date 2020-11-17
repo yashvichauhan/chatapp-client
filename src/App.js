@@ -51,17 +51,17 @@ function App(props) {
     return (
         <div className={"App"}>
             <Switch>
-                { !token && <Route exact path='/' component={Login}/> }
-                { !token && <Route path={'/signup'} component={SignUp}/> }
-                { token ? <Route path={'/chathome'} component={ChatHome}/> : null }
-                { token && <Route path={'/editprofile'} component={EditProfile}/> }
+                { !props.token && <Route exact path='/' component={Login}/> }
+                { !props.token && <Route path={'/signup'} component={SignUp}/> }
+                { props.token ? <Route path={'/chathome'} component={ChatHome}/> : null }
+                { props.token && <Route path={'/editprofile'} component={EditProfile}/> }
                 <Route path={'/forgotPassword'} exact component={ForgotPassword}/>
                 <Route path={'/forgotPassword/:token'} component={ResetPassword} />
                 <Route component={NotFound} />
             </Switch>
         </div>
     );
-};
+}
 
 const mapStateToProps = state => {
   return {
