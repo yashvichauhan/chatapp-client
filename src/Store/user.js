@@ -23,6 +23,13 @@ const reducer=(state=initialState,action)=>{
                 token: null,
                 currentUser: null
             }
+        case reducerType.ON_EDIT_USER:
+            return {
+                ...state,
+                currentUser: {
+                    ...action.user
+                }
+            }
         default:
             return state;
     }
