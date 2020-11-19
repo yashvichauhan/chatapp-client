@@ -11,7 +11,6 @@ import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 import SignUp from "./Components/Signup/signup";
 import ChatHome from './Components/ChatHome/ChatHomePage'
 import ResetPassword from "./Components/ForgotPassword/ResetPassword/ResetPassword";
-import EditProfile from "./Components/ChatHome/EditProfile/editProfile";
 import * as reducerType from "./Store/reducerType";
 
 function App(props) {
@@ -51,17 +50,16 @@ function App(props) {
     return (
         <div className={"App"}>
             <Switch>
-                { !token && <Route exact path='/' component={Login}/> }
-                { !token && <Route path={'/signup'} component={SignUp}/> }
-                { token ? <Route path={'/chathome'} component={ChatHome}/> : null }
-                { token && <Route path={'/editprofile'} component={EditProfile}/> }
+                <Route exact path='/' component={Login}/>
+                <Route path={'/signup'} component={SignUp}/>
+                { props.token ? <Route path={'/chathome'} component={ChatHome}/> : null }
                 <Route path={'/forgotPassword'} exact component={ForgotPassword}/>
                 <Route path={'/forgotPassword/:token'} component={ResetPassword} />
                 <Route component={NotFound} />
             </Switch>
         </div>
     );
-};
+}
 
 const mapStateToProps = state => {
   return {

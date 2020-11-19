@@ -37,9 +37,10 @@ class SearchUser extends React.Component {
         if(res.data.length!==0){
           console.log(res.data)
           const data=res.data.map((user)=>({
-              key:user.email,
-              userName:user.name,
-              avatarSrc: user.avatar
+              key:user._id,
+              email:user.email,
+              name:user.name,
+              avatar: user.avatar
           }))
           this.setState({
               data,

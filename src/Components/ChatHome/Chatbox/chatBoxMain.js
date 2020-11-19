@@ -10,7 +10,6 @@ import humans from '../../../assets/images/humans.png'
 
 function ChatBoxMain(props){
     const { Title } = Typography;
-    console.log(props.cGroup)
     if(!props.cGroup){
         return(<div className={cssClasses.imageBox} >
             <img src={humans} alt="Humans"></img>

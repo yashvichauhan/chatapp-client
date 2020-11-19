@@ -12,9 +12,9 @@ function ChatGroup(props){
         <>
         <div className={cssClasses.container} onClick={() => props.onCurrentGroup(props.userData)} >
             <div className={cssClasses.chatgroup__user}>
-                <Avatar className={cssClasses.chatgroup__userAvatar} alt={props.userData.userName}></Avatar>
+                <Avatar className={cssClasses.chatgroup__userAvatar} alt={props.userData.name} src={props.userData.avatar}></Avatar>
                 <div>
-                    <Title level={5} style={{marginBottom:0,color:'lightgray'}}>{props.userData.userName}</Title>
+                    <Title level={5} style={{marginBottom:0,color:'lightgray'}}>{props.userData.name}</Title>
                     <small style={{color:'#a7a7a7'}}>A dummy status</small>
                 </div>
             </div>
@@ -24,6 +24,7 @@ function ChatGroup(props){
         </>
     )
 }
+
 
 const mapDispatchToProps = (dispatch) => {
     return {

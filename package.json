@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^12.1.10",
     "antd": "^4.8.0",
     "axios": "^0.21.0",
+    "firebase": "^8.0.2",
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.6",
     "react": "^17.0.1",
@@ -20,6 +21,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
     "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "socket.io-client": "^3.0.3",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux' ;
-import {createStore,compose, combineReducers} from 'redux';
+import {createStore, compose, combineReducers, applyMiddleware} from 'redux';
 import { BrowserRouter } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
+import thunk from "redux-thunk";
 
 import App from './App';
 import userReducer from './Store/user';
@@ -15,7 +16,7 @@ const rootReducer = combineReducers({
   chat: chatReducer
 });
 
-const store = createStore(rootReducer, composeEnhancers());
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 
 ReactDOM.render(
     <BrowserRouter>

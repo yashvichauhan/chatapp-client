@@ -2,3 +2,5 @@ export const INIT_AUTHSTATE="INIT_AUTHSTATE";
 export const AUTH_LOGOUT="AUTH_LOGOUT";
 export const LOADING_CHNG="LOADING_CHNG";
 export const CNG_CURRENT_GROUP="CNG_CURRENT_GROUP";
+
+export const ON_EDIT_USER = "ON_EDIT_USER";
