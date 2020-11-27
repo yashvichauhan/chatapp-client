@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 
 import 'antd/dist/antd.css'
 import cssClasses from './message.module.css'
-import * as actions from '../../../../Store/acitons/index';
 
 function Message(props){
     return(

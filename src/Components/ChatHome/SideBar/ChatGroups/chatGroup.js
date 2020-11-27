@@ -5,6 +5,7 @@ import { connect } from "react-redux"
 
 import cssClasses from './chatgroup.module.css'
 import * as reducerType from "../../../../Store/reducerType";
+import { Hidden } from '@material-ui/core';
 
 function ChatGroup(props){
     const { Title } = Typography;
@@ -13,9 +14,11 @@ function ChatGroup(props){
         <div className={cssClasses.container} onClick={() => props.onCurrentGroup(props.userData)} >
             <div className={cssClasses.chatgroup__user}>
                 <Avatar className={cssClasses.chatgroup__userAvatar} alt={props.userData.name} src={props.userData.avatar}></Avatar>
-                <div>
+                <div style={{overflow:Hidden}}>
                     <Title level={5} style={{marginBottom:0,color:'lightgray'}}>{props.userData.name}</Title>
-                    <small style={{color:'#a7a7a7'}}>A dummy status</small>
+                    <div style={{overflow:Hidden}}>
+                      <small style={{color:'#a7a7a7'}}>{props.userData.aboutme}</small>
+                    </div>
                 </div>
             </div>
             <div className={cssClasses.chatgroup__timestamp}>{'11:00 AM'}</div>

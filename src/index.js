@@ -16,7 +16,7 @@ const rootReducer = combineReducers({
   chat: chatReducer
 });
 
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
+export const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 
 ReactDOM.render(
     <BrowserRouter>

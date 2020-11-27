@@ -77,11 +77,13 @@ class SearchUser extends React.Component {
             className={cssClassses.input}
         />
         <hr style={{color:'#3d4761'}} ></hr>
-        <div style={{color:"white"}}>
+        <Spin spinning={this.state.fetching}>
+          <div style={{color:"white"}}>
             {data.map((user)=>(
                 <ChatGroups userData={user}/>
             ))}
-        </div>
+          </div>
+        </Spin>
       </>
     );
   }

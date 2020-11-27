@@ -1,5 +1,6 @@
 import React from 'react';
-import { Drawer, List, Avatar,Row,Col,Typography } from 'antd';
+import { connect } from "react-redux";
+import { Drawer, Avatar,Row,Col,Typography } from 'antd';
 import  { UserOutlined, MailOutlined} from '@ant-design/icons';
 
 function showProfile(props) {
@@ -33,7 +34,7 @@ function showProfile(props) {
                 <Title level={5} style={{color:"#e6e6e6"}}><span style={{padding:"0 1em 0 0"}}><UserOutlined/></span>About</Title>
                 <Row>
                     <p justify={"center"} style={{color:"grey"}}>
-                        Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content.
+                        {props.user.aboutme}
                     </p>
                 </Row>
             </Col>
@@ -52,5 +53,9 @@ function showProfile(props) {
       </>
     );
 }
-
-export default showProfile;
+const mapStateToProps = state => {
+  return {
+    currentUser: state.user.currentUser,
+  };
+};
+export default connect(mapStateToProps)(showProfile);

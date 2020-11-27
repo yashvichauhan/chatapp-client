@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Layout } from "antd";
-import TopicMenu from "./TopicMenu";
 
 import cssClasses from "./chathomepage.module.css";
 
@@ -16,13 +15,13 @@ function ChatHomePage() {
     setSelectedKey(key);
     setContentIndex(+key);
   };
-  const Menu = (
-    <TopicMenu
-      topics={topics}
-      selectedKey={selectedKey}
-      changeSelectedKey={changeSelectedKey}
-    />
-  );
+  // const Menu = (
+  //   <TopicMenu
+  //     topics={topics}
+  //     selectedKey={selectedKey}
+  //     changeSelectedKey={changeSelectedKey}
+  //   />
+  // );
   return (
     <div className={cssClasses.App}>
       <Layout style={{height:'100vh'}}>

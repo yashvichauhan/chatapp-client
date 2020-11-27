@@ -3,7 +3,7 @@ import {Typography} from 'antd'
 
 import cssClasses from './chatPrevGroup.module.css';
 
-function chatPrevGroup(props){
+function ChatPrevGroup(props){
     const {Title} =Typography;
     return(
         <div className={cssClasses.chatPrevGroup}>
@@ -12,4 +12,4 @@ function chatPrevGroup(props){
     )
 }
 
-export default chatPrevGroup;
+export default ChatPrevGroup;

@@ -6,9 +6,8 @@ import { Form, Input, Button, Row, Col, Typography, Spin, notification } from "a
 import { CloseCircleOutlined, UserOutlined, LockOutlined } from '@ant-design/icons';
 import { connect } from "react-redux"
 
-import axiosConfig from "../../db/axiosConfig";
-
-import * as reducerType from "../../Store/reducerType";
+import * as reducerType from '../../Store/reducerType'
+import * as reducerActions from '../../Store/acitons/index'
 
 const { Title } = Typography;
 
@@ -26,25 +25,25 @@ function Login(props) {
 
   const onFinish = (values) => {
     setLoading(true);
-    axiosConfig.post("user/signin", {
-      email: values.email,
-      password: values.password
-    }).then((res)=>{
-      setLoading(false);
-      localStorage.setItem('currentUser',JSON.stringify(res.data.user))
-      localStorage.setItem('token', res.data.jwt)
-      props.onAuth(res.data.jwt, res.data.user);
-      props.history.replace('/chathome')
-    }).catch((err)=>{
-      setLoading(false);
-      //Error notification
-      notification.open({
+    const loginObj={
+      email:values.email,
+      password:values.password
+    }
+    props.onAuth(loginObj,"login")
+      .then((user)=>{
+        setLoading(false);
+        props.onAuthState();
+        localStorage.setItem('currentUser',JSON.stringify(user));
+        props.history.replace('/chathome');
+      })
+      .catch((err)=>{
+        setLoading(false);
+        notification.open({
         message: 'Login Failed',
-        description: err.response.data.error.msg,
+        description: err.message,
         icon: <CloseCircleOutlined style={{ color: 'red' }} />,
       });
-      console.log(err);
-    });
+    })
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -120,12 +119,8 @@ function Login(props) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAuth: (token, user) =>
-      dispatch({
-        type: reducerType.INIT_AUTHSTATE,
-        token,
-        user
-      }),
+    onAuth:(email,password,authState)=>(dispatch(reducerActions.auth(email,password,authState))),
+    onAuthState:()=>(dispatch({type: reducerType.INIT_AUTHSTATE}))
   };
 };
 

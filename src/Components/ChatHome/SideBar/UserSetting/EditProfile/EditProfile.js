@@ -1,13 +1,14 @@
 import React, {useState} from "react";
 
 import {Modal, Button, Row, Col, Form, Input, Avatar, Upload, message} from 'antd';
-import {MailOutlined, UploadOutlined, UserOutlined} from "@ant-design/icons";
+import {MailOutlined, UploadOutlined, UserOutlined,SmileOutlined } from "@ant-design/icons";
 
 const EditProfile = (props) => {
   const [ file, setFile ] = useState(null);
   const [ prevURL, setPrevURL ] = useState(props.userData.avatar);
   const [ name, setName ] = useState(props.userData.name);
   const [ email, setEmail ] = useState(props.userData.email);
+  const [aboutme,setAboutMe] = useState(props.userData.aboutme);
 
   const onFinish = (values) => {
     props.handleSubmit(values, file);
@@ -102,6 +103,18 @@ const EditProfile = (props) => {
                 <Input prefix={<UserOutlined className={"site-form-item-icon"} />} placeholder={'Name'} />
               </Form.Item>
               <Form.Item
+                initialValue={aboutme}
+                name={"aboutme"}
+                hasFeedback
+                rules={[{
+                    required: true,
+                    message: 'Can\'t set empty about me.' 
+                  }
+                ]}
+              >
+                <Input prefix={<SmileOutlined className={"site-form-item-icon"} />} maxLength={100} placeholder={'About Me'} />
+              </Form.Item>
+              <Form.Item
                 initialValue={email}
                 name={"email"}
                 hasFeedback
@@ -111,7 +124,7 @@ const EditProfile = (props) => {
                   message: 'Email is required.'
                 }]}
               >
-                <Input prefix={<MailOutlined className={"site-form-item-icon"} />} placeholder={"Email"} />
+                <Input prefix={<MailOutlined className={"site-form-item-icon"} />}  placeholder={"Email"} />
               </Form.Item>
             </Form>
           </Col>

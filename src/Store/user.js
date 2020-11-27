@@ -5,6 +5,7 @@ const initialState={
     token: null,
     authState:false,
     loading:false,
+    error:null
 }
 
 const reducer=(state=initialState,action)=>{
@@ -13,8 +14,6 @@ const reducer=(state=initialState,action)=>{
             return{
                 ...state,
                 authState:true,
-                token: action.token,
-                currentUser: action.user
             }
         case reducerType.AUTH_LOGOUT:
             return{
@@ -26,9 +25,33 @@ const reducer=(state=initialState,action)=>{
         case reducerType.ON_EDIT_USER:
             return {
                 ...state,
-                currentUser: {
-                    ...action.user
+                currentUser:{
+                    ...state.currentUser,
+                    name:action.user.name,
+                    avatar:action.user.avatar,
+                    email:action.user.email,
+                    aboutme:action.user.aboutme
                 }
+            }
+        case (reducerType.AUTH_SUCCESS):
+            return{
+                ...state,
+                currentUser:action.userData,
+                error:null
+            }
+        case (reducerType.AUTH_FAIL):
+            return{
+                ...state,
+                error:action.errorMsg
+        }
+        case (reducerType.AUTH_LOGOUT):
+            return{
+                ...initialState,
+        }
+        case (reducerType.LOGOUT_FAIL):
+            return{
+                ...state,
+                error:action.error
             }
         default:
             return state;

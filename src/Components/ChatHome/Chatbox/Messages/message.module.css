@@ -13,11 +13,11 @@
     display: flex;
 }
 .message__box{
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 .message_time{
     color: #e8e8e8;
-    margin-top: 1.5px;
+    margin-top: 1px;
     font-style: italic;
     font-size: 10px;
     align-self: flex-end;

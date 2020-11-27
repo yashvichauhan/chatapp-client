@@ -6,8 +6,8 @@ import "antd/dist/antd.css";
 import {Form, Input, Row, Col, Typography, Spin, Button, notification} from "antd";
 import { CloseCircleOutlined, UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 
-import axiosConfig from '../../db/axiosConfig'
 import * as reducerType from '../../Store/reducerType'
+import * as reducerActions from '../../Store/acitons/index'
 
 const layout = {
     labelCol: {
@@ -26,37 +26,30 @@ function Signup(props) {
     const onFinish = (values) => {
         setLoading(true);
         console.log("Success:", values);
-        const signupData= JSON.stringify({
+        const signupObj={
             name: values.name,
             email: values.email,
             password: values.password,
-        });
-        axiosConfig.post("user/signup",signupData).then((res)=>{
+        }
+        props.onAuth(signupObj,"signup")
+        .then((user)=>{
             setLoading(false);
-            props.onAuth(res.data.jwt, res.data.user);
-            localStorage.setItem('currentUser',JSON.stringify(res.data.user));
-            localStorage.setItem('token', res.data.jwt);
+            props.onAuthState();
+            localStorage.setItem('currentUser',JSON.stringify(user));
             props.history.replace('/chathome');
-        }).catch((err)=>{
+        })
+        .catch((err)=>{
             setLoading(false);
-            console.log(err);
-            let msg = 'something went wrong.';
-            if (err.response.data.error.msg) {
-                msg = err.response.data.error.msg;
-            }
-            //Error notification
             notification.open({
                 message: 'Signup Failed',
-                description: msg,
+                description: err.message,
                 icon: <CloseCircleOutlined style={{ color: 'red' }} />,
             });
-        });
+        })
     }
-
     const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
     };
-
     return (
         <Row
             type={"flex"}
@@ -124,12 +117,13 @@ function Signup(props) {
 }
 const mapStateToProps=(state)=>{
   return{
-    authState: state.authState,
+    authState: state.user.authState,
   }
 }
 const mapDispatchToProps=(dispatch)=>{
   return{
-      onAuth : (token, user)=>dispatch({type: reducerType.INIT_AUTHSTATE, token, user}),
+    onAuth:(email,password,authState)=>(dispatch(reducerActions.auth(email,password,authState))),
+    onAuthState:()=>(dispatch({type: reducerType.INIT_AUTHSTATE}))
   }
 }
 

@@ -5,12 +5,13 @@ import EditProfile from "./EditProfile/EditProfile";
 import * as actions from '../../../../Store/acitons/index';
 
 import 'antd/dist/antd.css';
-import  { UserAddOutlined, MoreOutlined } from '@ant-design/icons';
+import  { PlusOutlined ,UsergroupAddOutlined, MoreOutlined } from '@ant-design/icons';
 import {Menu, Dropdown, Tooltip, Avatar, message} from 'antd';
-import logoutHandler from '../../../Logout/logout'
 import SearchUser from '../SearchUser/searchUser'
 import ShowProfile from '../../ShowProfile/showProfile'
 import ChatPrevGroup from './ChatPrevGroups/chatPrevGroup'
+import CreateConnection from './CreateConnection/createConnection';
+import ChatConnections from './ChatConnections/chatConnections';
 
 import Box from '@material-ui/core/Box';
 import useStyles from "./useStyles";
@@ -20,6 +21,8 @@ const UserSetting = (props) => {
     const classes = useStyles();
 
     const [ modal, setModal ] = useState(false);
+    const [ createConnection, setCreateConnection ] = useState(false);
+    const [ connectionLoading, setConnectionLoading ] = useState(false);
     const [ editLoading, setEditLoading ] = useState(false);
     const [ userData, setUserData ] = useState(props.user);
     const [ profileDrawer,setProfileDrawer]=useState(false);
@@ -28,26 +31,64 @@ const UserSetting = (props) => {
     if(userData) {
       u_avatar=userData.name.charAt(0);
     }
-    const closeProfile = ()=>{
-      setProfileDrawer(false)
-    }
     const handleCancel = () => {
       setModal(false);
+      setProfileDrawer(false);
+      setCreateConnection(false);
     };
-
+    const handleConnectionSubmit=(values)=>{
+      setConnectionLoading(true);
+      const connectionData={
+        email:values.email,
+        firstmessage:values.firstmessage
+      }
+      
+      props.onNewConnection(connectionData,userData)
+      .then((user)=>{
+        console.log("USER FOUND: "+user);
+        message.success(`User added to connection!`);
+        handleCancel();
+      })
+      .catch((err)=>{
+        console.log("USER NOT FOUND "+err);
+        message.error(`${err}`);
+      })
+      setConnectionLoading(false);
+    };
+    const handleShowConnection=()=>{
+      props.toggleConnection();
+      console.log("CONN");
+      props.showConnection(userData)
+      .then((res)=>{
+        //do nothing 
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    }
+    const handleShowChat=()=>{
+      props.toggleConnection();
+      console.log("CHAT");
+    }
     const handleEditProfileSubmit = (values, file) => {
       setEditLoading(true);
-      const formData = new FormData();
-      if(file) {
-        formData.append('avatar', file);
-        console.log("File exists:")
-      }else if(userData.avatar) {
-        formData.append('avatar', userData.avatar);
-        console.log("File doesnt exist:")
+      let editData={
+        name:values.name,
+        email:values.email,
+        aboutme:values.aboutme,
+        userID:props.user.userID,
       }
-      formData.append('name', values.name);
-      formData.append('email', values.email);
-      props.onEditProfile(props.token, formData).then(res => {
+      if(file) {
+        editData['avatar']=file;
+        editData['fileFlag']=true;
+        console.log("INSIDE")
+      }else {
+        editData['avatar']=userData.avatar;
+        editData['fileFlag']=false;
+      }
+      console.log(editData.fileFlag,editData.avatar);
+      props.onEditProfile(editData,userData.email)
+      .then(res => {
         setEditLoading(false);
         handleCancel();
         message.success(`Profile updated successfully.`);
@@ -56,7 +97,10 @@ const UserSetting = (props) => {
         message.error(`${err}`);
       });
     };
-
+    const logoutHandler=()=>{
+      props.onLogout();
+    }
+    //MENU 
     const menu = (
         <Menu style={{maxWidth:'200px'}}>
           <Menu.Item key="0">
@@ -67,8 +111,11 @@ const UserSetting = (props) => {
           <Menu.Item key="1">
             <a href="/#">Settings</a>
           </Menu.Item>
+          <Menu.Item key="2">
+            <div onClick={(props.showconn)?handleShowChat:handleShowConnection}>{(props.showconn)?`Chats`:`Connections`}</div>
+          </Menu.Item>
           <Menu.Item key="3">
-            <a href="/" onClick={logoutHandler} >Logout</a>
+            <div onClick={logoutHandler}>Logout</div>
           </Menu.Item>
         </Menu>
       );
@@ -83,8 +130,15 @@ const UserSetting = (props) => {
         />
         <ShowProfile
           visible={profileDrawer}
-          onClose={closeProfile}
+          onClose={handleCancel}
           user={props.user}
+        />
+        <CreateConnection
+          visible={createConnection}
+          handleConnectionSubmit={handleConnectionSubmit}
+          connectionLoading={connectionLoading}
+          handleCancel={handleCancel}
+          userData={userData}
         />
         <div className={cssClasses.container}>
             <Box
@@ -96,8 +150,11 @@ const UserSetting = (props) => {
                 </Tooltip>
             </Box>
             <Box p={1} justifyContent="flex-end">
+              <Tooltip placement={"bottom"} title={"New Connection"}>
+                <PlusOutlined  onClick={()=>setCreateConnection(true)} className={cssClasses.userSetting__Icon}/>
+              </Tooltip>
               <Tooltip placement={"bottom"} title={"Create new Group"}>
-                <UserAddOutlined className={cssClasses.userSetting__Icon}/>
+                <UsergroupAddOutlined className={cssClasses.userSetting__Icon}/>
               </Tooltip>
               <Dropdown overlay={menu} trigger={['click']}>
                 <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
@@ -107,7 +164,7 @@ const UserSetting = (props) => {
             </Box>
             </Box>
             <SearchUser/>
-            <ChatPrevGroup/>
+            {(props.showconn)?<ChatConnections/>:<ChatPrevGroup/>}
         </div>
       </>
     );
@@ -115,14 +172,17 @@ const UserSetting = (props) => {
 
 const mapStateToProps = state => {
   return {
-    token: state.user.token,
     user: state.user.currentUser,
+    showconn:state.chat.showconnection
   };
 };
-
 const mapDispatchToProps = dispatch => {
   return {
-    onEditProfile: (token, formData) => dispatch(actions.editProfile(token, formData))
+    onEditProfile: (editData,email) => dispatch(actions.editProfile(editData,email)),
+    onNewConnection: (connectionData,user)=>dispatch(actions.createConnection(connectionData,user)),
+    showConnection: (user)=>dispatch(actions.showConnection(user)),
+    toggleConnection:()=>dispatch(actions.toggleConnection()),
+    onLogout:()=>dispatch(actions.authLogout())
   };
 };
 
