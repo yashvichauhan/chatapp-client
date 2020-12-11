@@ -1,3 +1,22 @@
+.message__box{
+    margin-bottom: 1rem;
+}
+.message_contentbox{
+    display: flex;
+}
+.hide_msg{
+    display: relative;
+    color: #F0F2F5;
+    margin-top:1rem;
+    margin-left:0.2rem;
+    margin-right:0.2rem;
+}
+.hide_msg:hover {
+    color: gray;
+}
+.message_outline{
+    align-items: center;
+}
 .message__content{
     background-color: #0a80ff;;
     color:#fff;
@@ -9,17 +28,16 @@
     display: inline-flex;
     flex-direction: column;
 }
-.message_contentbox{
-    display: flex;
-}
-.message__box{
-    margin-bottom: 1rem;
-}
 .message_time{
     color: #e8e8e8;
     margin-top: 1px;
     font-style: italic;
     font-size: 10px;
     align-self: flex-end;
+}
+.message__forward{
+    font-style: italic;
+    font-size: 0.6 em;
+    color:lightgray;
 }
    

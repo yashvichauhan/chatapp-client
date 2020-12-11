@@ -10,6 +10,14 @@ const initialState={
 
 const reducer=(state=initialState,action)=>{
     switch(action.type) {
+        case reducerType.AUTH_START:
+            return{
+                currentUser: null,
+                token: null,
+                authState:false,
+                loading:false,
+                error:null
+            }
         case reducerType.INIT_AUTHSTATE:
             return{
                 ...state,
@@ -43,10 +51,6 @@ const reducer=(state=initialState,action)=>{
             return{
                 ...state,
                 error:action.errorMsg
-        }
-        case (reducerType.AUTH_LOGOUT):
-            return{
-                ...initialState,
         }
         case (reducerType.LOGOUT_FAIL):
             return{

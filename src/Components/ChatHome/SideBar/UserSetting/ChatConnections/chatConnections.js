@@ -10,30 +10,27 @@ import ChatGroups from '../../ChatGroups/chatGroup';
 function ChatConnections (props){
     const {Title} =Typography;
     const [groupLoading,setGroupLoading]=useState(false);
+    const {userGroupList}=props;
+    //CALLING FUNCTION
     
     useEffect(() => {
-        if(props.user.groups.length==0){
-            setGroupLoading(false)
-        }
-        else if(props.groups===null){
+        if(userGroupList.length==0){
             setGroupLoading(true);
         }else{
-            setGroupLoading(false);
+            setGroupLoading(false)
         }
-    },[props.groups])
+    },[userGroupList])
  
     return(
         <>
         <div className={cssClasses.chatConnections}>
             <Title level={4} style={{color:"#e6e6e6"}}>Connections</Title>
         </div>
-        {console.log(props.groups)}
         <Spin spinning={groupLoading}>
             <div style={{color:"white"}}>
-                {(props.user.groups.length==0)?(<p>No connections added till now!</p>):null}
-                {(props.user.groups.length>0 && props.groups!==null && props.groups.length>0)?props.groups.map((grp)=>(
-                    <ChatGroups userData={grp.reciever} key={grp.reciever.gID}/>
-                )):null}
+                {(userGroupList.length!==0 )? Object.values(userGroupList).map((grp)=>(
+                    <ChatGroups userData={grp} key={grp.gID}/>
+                )):<p>No connections added till now!</p>}
             </div>
         </Spin>
         </>
@@ -41,8 +38,7 @@ function ChatConnections (props){
 }
 const mapStateToProps = state => {
     return {
-        groups:state.chat.groups,
-        user:state.user.currentUser
+        userGroupList: state.chat.userGroupList
     };
 };
 export default connect(mapStateToProps)(ChatConnections);

@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState,useEffect} from 'react';
 import { connect } from "react-redux";
 
 import EditProfile from "./EditProfile/EditProfile";
@@ -19,7 +19,6 @@ import cssClasses from "./userSetting.module.css";
 
 const UserSetting = (props) => {
     const classes = useStyles();
-
     const [ modal, setModal ] = useState(false);
     const [ createConnection, setCreateConnection ] = useState(false);
     const [ connectionLoading, setConnectionLoading ] = useState(false);
@@ -28,21 +27,66 @@ const UserSetting = (props) => {
     const [ profileDrawer,setProfileDrawer]=useState(false);
     
     let u_avatar = null;
+    let unsubscribe;
     if(userData) {
       u_avatar=userData.name.charAt(0);
     }
+
+    //CALLING FUNCTION
+    useEffect(()=>{
+      if(props.chatlist!==null && props.chatlist!==[]){
+        props.chatlist.map((group)=>{
+          props.getRealtimeMessages(group.gID)
+          .then((res)=>{
+            return res;
+          })
+          .catch((err)=>{
+            console.log(err);
+            return err;
+          })
+        })
+      }
+    },[props.chatlist]);
+
+    useEffect(()=>{
+      if(props.groups!==null && props.groups!==[]){
+        props.groups.map((group)=>{
+          props.ongetRealTimeUserGroup(group.reciever,group.gID)
+          .then((res)=>{
+            unsubscribe=res;
+          })
+          .catch((err)=>{
+            console.log(err);
+            return err;
+          })
+        })
+      }
+  },[props.groups]);  
+  
+    //FOR CLEANUP
+    useEffect(()=>{
+      return()=>{
+        if(unsubscribe){
+          unsubscribe();
+        }
+        //unsubscribe.then((f)=>f()).catch((err)=>console.log(err));
+        //unsubscribeM.then((f)=>f()).catch((err)=>console.log(err));
+      }
+    },[])
+
+    //UTILITY FUNCTIONS
     const handleCancel = () => {
       setModal(false);
       setProfileDrawer(false);
       setCreateConnection(false);
     };
+
     const handleConnectionSubmit=(values)=>{
       setConnectionLoading(true);
       const connectionData={
         email:values.email,
-        firstmessage:values.firstmessage
+        imessage:values.firstmessage
       }
-      
       props.onNewConnection(connectionData,userData)
       .then((user)=>{
         console.log("USER FOUND: "+user);
@@ -55,21 +99,17 @@ const UserSetting = (props) => {
       })
       setConnectionLoading(false);
     };
+
     const handleShowConnection=()=>{
       props.toggleConnection();
       console.log("CONN");
-      props.showConnection(userData)
-      .then((res)=>{
-        //do nothing 
-      })
-      .catch((err)=>{
-        console.log(err);
-      })
     }
+
     const handleShowChat=()=>{
       props.toggleConnection();
       console.log("CHAT");
     }
+
     const handleEditProfileSubmit = (values, file) => {
       setEditLoading(true);
       let editData={
@@ -97,8 +137,10 @@ const UserSetting = (props) => {
         message.error(`${err}`);
       });
     };
+
     const logoutHandler=()=>{
-      props.onLogout();
+      props.onLogout(props.user.userID);
+      props.hist.push('/');
     }
     //MENU 
     const menu = (
@@ -107,9 +149,6 @@ const UserSetting = (props) => {
             <div onClick={() => setModal(true)}>
               Edit Profile
             </div>
-          </Menu.Item>
-          <Menu.Item key="1">
-            <a href="/#">Settings</a>
           </Menu.Item>
           <Menu.Item key="2">
             <div onClick={(props.showconn)?handleShowChat:handleShowConnection}>{(props.showconn)?`Chats`:`Connections`}</div>
@@ -173,16 +212,20 @@ const UserSetting = (props) => {
 const mapStateToProps = state => {
   return {
     user: state.user.currentUser,
-    showconn:state.chat.showconnection
+    currentGroup:state.chat.currentGroup,
+    showconn:state.chat.showconnection,
+    chatlist:state.chat.chatList,
+    groups:state.chat.groups
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
+    getRealtimeMessages:(gID)=>dispatch(actions.getRealTimeConversations(gID)),
+    ongetRealTimeUserGroup:(groupID,uID)=>dispatch(actions.getRealTimeUserGroup(groupID,uID)),
     onEditProfile: (editData,email) => dispatch(actions.editProfile(editData,email)),
     onNewConnection: (connectionData,user)=>dispatch(actions.createConnection(connectionData,user)),
-    showConnection: (user)=>dispatch(actions.showConnection(user)),
     toggleConnection:()=>dispatch(actions.toggleConnection()),
-    onLogout:()=>dispatch(actions.authLogout())
+    onLogout:(userID)=>dispatch(actions.authLogout(userID))
   };
 };
 

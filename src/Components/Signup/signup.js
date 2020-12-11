@@ -1,5 +1,8 @@
 import React,{useState} from 'react';
 import {connect} from 'react-redux';
+import countryList from "react-select-country-list";
+import { Select } from 'antd';
+import  { HomeOutlined } from '@ant-design/icons';
 
 import {Link } from 'react-router-dom';
 import "antd/dist/antd.css";
@@ -22,7 +25,6 @@ const { Title } = Typography;
 
 function Signup(props) {
     const [ loading, setLoading ] = useState(false);
-
     const onFinish = (values) => {
         setLoading(true);
         console.log("Success:", values);
@@ -30,6 +32,7 @@ function Signup(props) {
             name: values.name,
             email: values.email,
             password: values.password,
+            countryCode: values.country
         }
         props.onAuth(signupObj,"signup")
         .then((user)=>{
@@ -96,6 +99,17 @@ function Signup(props) {
                         ]}
                     >
                         <Input.Password prefix={<LockOutlined className={"site-form-item-icon"} />} placeholder={"Password"} />
+                    </Form.Item>
+                    <Form.Item
+                        name={"country"}
+                        required={true}
+                    >
+                        <Select
+                            suffixIcon={<HomeOutlined className={"site-form-item-icon"} />}
+                            showSearch
+                            placeholder="Select your country"
+                            options={countryList().getData()}>
+                        </Select>
                     </Form.Item>
                     <Form.Item>
                         <Row>

@@ -1,14 +1,29 @@
 import React,{useState} from 'react';
+import emailjs from 'emailjs-com';
+import {connect} from 'react-redux';
 
-import {Modal, Row, Col, Form, Input} from 'antd';
+import {Modal, Row, Col, Form, Input,message} from 'antd';
 import {MailOutlined} from "@ant-design/icons";
+
 
 const CreateConnection=(props)=>{
     const [ email, setEmail ] = useState('');
     const TextArea =Input.TextArea;
     const onFinish = (values) => {
+      const msg={
+        sender:props.user.name,
+        email:values.email,
+        firstmessage:values.firstmessage,
+      }
+      emailjs.send('service_82k7w2q', 'template_p673j8e', msg, 'user_FJFaFpeo31W9osDbLRD0y')
+      .then((result) => {
         props.handleConnectionSubmit(values);
+        console.log("Mail working fine");
+      },(err) => {
+        message.error(`Some problem in email please check it.`);
+      });
     }
+
     const onFinishFailed = () => {
         console.log('failed edit profile');
     }
@@ -66,4 +81,10 @@ const CreateConnection=(props)=>{
       </>
     )
 }
-export default CreateConnection;
+
+const mapStateToProps = state => {
+  return {
+    user: state.user.currentUser,
+  };
+};
+export default connect(mapStateToProps)(CreateConnection);

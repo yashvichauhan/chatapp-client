@@ -33,10 +33,12 @@ export const auth = (InputObj,authState)=>
                     id:res.user.uid,
                     name:InputObj.name,
                     email:InputObj.email,
+                    country:InputObj.countryCode,
                     password:hash,
                     aboutme:"Hey there! I'm new Here.",
                     avatar:"",
-                    groups:[]
+                    groups:[],
+                    isOnline:true
                 }
                 fire.firestore().collection('users')
                 .add(sendData)
@@ -65,6 +67,11 @@ export const auth = (InputObj,authState)=>
                     .get()
                     .then(function(querySnapShot){
                         querySnapShot.forEach(doc => {
+                            fire.firestore().collection('users')
+                            .doc(doc.id)
+                            .update({
+                                isOnline:true
+                            })
                             currentUser={...doc.data(), userID:doc.id};
                         });
                         dispatch(authSuccess(currentUser));
@@ -96,16 +103,28 @@ export const logoutFail=(err)=>{
         error:err
     }
 }
-export const authLogout=()=>{
+export const authLogout=(userID)=>{
     return async dispatch=>{
-        fire.auth().signOut()
-        .then(()=>{
-            localStorage.clear();
-            console.log("Signout working");
-            dispatch(logoutSuccess());
+        fire.firestore().collection('users')
+        .doc(userID)
+        .update({
+            isOnline:false,
+            lastActive:new Date()
+        })
+        .then((res)=>{
+            fire.auth().signOut()
+            .then(()=>{
+                localStorage.clear();
+                console.log("Signout working");
+                dispatch(logoutSuccess());
+            })
+            .catch((err)=>{
+                console.log("Logout error: "+err);
+                dispatch(logoutFail(err));
+            })
         })
         .catch((err)=>{
-            console.log("Logout error: "+err);
+            console.log("updation error"+err);
             dispatch(logoutFail(err));
         })
     }

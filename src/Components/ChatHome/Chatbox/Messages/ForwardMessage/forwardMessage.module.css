@@ -1,0 +1,22 @@
+.forwardMessage__selected{
+    font-size: 1em;
+    color:#1a2236;
+    padding: 2px;
+}
+.forwardMessage__box{
+    max-width: 280pt;
+    height: 200pt;
+    overflow-y:scroll;
+    align-items: center;
+    padding:1em;
+}
+.forwardMessage__user{
+    padding:0.5em;
+}
+.forwardMessage__aboutme{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color:gray;
+    font-size: small;
+}

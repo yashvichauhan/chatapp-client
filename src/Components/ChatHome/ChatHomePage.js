@@ -6,7 +6,7 @@ import cssClasses from "./chathomepage.module.css";
 import SideBar from "./SideBar/SideBar";
 import ChatBoxMain from './Chatbox/chatBoxMain'
 
-function ChatHomePage() {
+function ChatHomePage(props) {
   const topics = ["First topic", "Second topic", "Third topic"];
   const [contentIndex, setContentIndex] = useState(0);
   const [selectedKey, setSelectedKey] = useState("0");
@@ -25,7 +25,7 @@ function ChatHomePage() {
   return (
     <div className={cssClasses.App}>
       <Layout style={{height:'100vh'}}>
-        <SideBar />
+        <SideBar hist={props.history}/>
         <Layout.Content className={cssClasses.content}>
           <ChatBoxMain/>
         </Layout.Content>

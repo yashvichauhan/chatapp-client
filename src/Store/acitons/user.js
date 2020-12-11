@@ -13,7 +13,6 @@ export const editProfile = (editData,email) => {
         avatar:null
       }
       //CHECK IF EMAIL ALREADY EXISTS
-      console.log(editData.email);
       if(email!==editData.email){
         updateData['email']=email;
         fire.firestore().collection('users')
@@ -24,7 +23,6 @@ export const editProfile = (editData,email) => {
             updateData['email']=editData.email;
           }else{
             flag=false;
-            console.log("NOT WORKING");
             reject("Email already exists.");
           }
         })
@@ -47,7 +45,6 @@ export const editProfile = (editData,email) => {
         updateData['avatar']=editData.avatar;
       }
       //UPDATE DATA
-      console.log(flag);
       if(flag!==false){
         fire.firestore().collection('users').doc(editData.userID)
         .update(

@@ -32,3 +32,10 @@
 .sendchat__icon{
     font-size: 1.5em;
 }
+.sendchat__blocked{
+    padding:1.2rem;
+    margin-top: 1em;
+    background-color: lightgray;
+    color:#1a2236;
+    text-align: center;
+}
